@@ -1,50 +1,98 @@
-# Welcome to your Expo app 👋
+# 🏗️ DC-App: Your Complete Construction Services Solution
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+<div align="center">
+  <img src="./assets/images/icon.png" alt="DC-App Logo" width="120"/>
+  <h3>Professional Construction & Home Services at Your Fingertips</h3>
+</div>
 
-## Get started
+## 📱 About the App
 
-1. Install dependencies
+DC-App is a comprehensive mobile application developed for Dash Constructions, offering a seamless platform for booking construction, renovation, repair, and home improvement services. The app connects users with professional service providers and enables easy booking and management of construction-related services.
 
+### 🛠️ Key Features
+
+- **Home Renovation Services**: Book professional renovation services
+- **Construction Planning**: Get expert consultation for construction projects
+- **Repair Services**: Quick access to repair and maintenance services
+- **Building Materials**: Browse and order construction materials
+- **Real-time Booking**: Schedule services at your convenience
+- **Service Categories**: Browse services by categories
+- **Search Functionality**: Find specific services easily
+- **Secure Authentication**: Protected user access with Clerk
+- **Booking Management**: Track and manage your service bookings
+- **Location Services**: Get services based on your location
+
+## 🚀 Technology Stack
+
+- **Frontend Framework**: React Native with Expo
+- **Navigation**: Expo Router for seamless navigation
+- **Authentication**: Clerk for secure user management
+- **API Integration**: GraphQL for efficient data fetching
+- **Backend CMS**: Hygraph for content management
+- **State Management**: React Hooks for state handling
+- **UI Components**: Custom-built React Native components
+- **Location Services**: Expo Location for geolocation features
+
+## 🛠️ Development Timeline
+
+- **Development Start**: April 2025
+- **Development Completion**: October 2025
+- **Current Status**: Internal Testing Phase
+- **Upcoming**: Google Play Store Release
+
+## 👨‍💻 Developer
+
+**Ayush Anshuman Supakar**
+- Full-stack Developer
+- Specialized in React Native & Expo Development
+- Created the entire application architecture
+
+## 🏃‍♂️ Getting Started
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/AyushSupakar/DC-App.git
+   ```
+
+2. Install dependencies
    ```bash
    npm install
    ```
 
-2. Start the app
+3. Set up environment variables
+   ```bash
+   # Create a .env file with the following:
+   HYGRAPH_URL=your_hygraph_url
+   HYGRAPH_TOKEN=your_hygraph_token
+   ```
 
+4. Start the development server
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+## 📱 App Preview
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+The app is currently in testing phase and will be available on:
+- ⚡ Google Play Store (Coming Soon)
+- 📱 Expo Go (During Development)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 🔐 Security Features
 
-## Get a fresh project
+- Secure authentication with Clerk
+- Protected API endpoints
+- Encrypted data transmission
+- Safe location data handling
 
-When you're ready, run:
+## 📞 Support & Contact
 
-```bash
-npm run reset-project
-```
+For any queries regarding the application, please contact:
+- 📧 [Contact Email:ayushsupakar22@gmail.com]
+- 🌐 [Website:ayushsupakar.in]
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+<div align="center">
+  <p>Developed with ❤️ by Ayush Anshuman Supakar</p>
+  <p>© 2025 Dash Constructions. All rights reserved.</p>
+</div>
