@@ -34,7 +34,7 @@ const Header = ({showsearch}) => {
                         style={styles.userImage}/>
                 <View>
                     <Text style={{color:Colors.WHITE, fontFamily:'outfit'}} >Welcome,</Text>
-                    <Text style={{color:Colors.WHITE, fontSize:20, fontFamily:'outfit-medium'}}>{user?(((user?.fullName)?.split(" ")[0])+" "+(((((user?.fullName)?.split(" "))?.length)>1)?((user?.fullName).split(" ")[1]):(""))):("Dear User")}</Text>
+                    {(user.fullName)?(<Text style={{color:Colors.WHITE, fontSize:20, fontFamily:'outfit-medium'}}>{user?(((user?.fullName)?.split(" ")[0])+" "+(((((user?.fullName)?.split(" "))?.length)>1)?((user?.fullName).split(" ")[1]):(""))):("Dear User")}</Text>):(<Text style={{color:Colors.WHITE, fontSize:20, fontFamily:'outfit-medium'}}>Dear User</Text>)}
                 </View>
         </View>
             <SignOutButton />

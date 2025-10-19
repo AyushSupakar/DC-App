@@ -10,6 +10,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Linking,
 } from 'react-native';
 import Colors from '../utils/Colors';
 
@@ -28,6 +29,12 @@ const ServiceDetailsScreen: React.FC = () => {
   const route = useRoute();
   const params = (route.params as { service?: Service } | undefined) ?? {};
   const service: Service | null = params.service ?? null;
+
+  const handleOpenWebsite = () => {
+    Linking.openURL('https://www.dashconstructions.in/').catch((err) =>
+      console.error('Failed to open website:', err)
+    );
+  };
 
   return (
     <ScrollView>
@@ -61,6 +68,20 @@ const ServiceDetailsScreen: React.FC = () => {
         <Text style={[styles.texts, styles.bold]}>{service?.email ?? 'N/A'}</Text>
       </View>
 
+      {/* ✅ Added company website link */}
+     <View style={[styles.container, { alignItems: 'center', marginTop: 5 }]}>
+  <TouchableOpacity
+    activeOpacity={0.8}
+    onPress={handleOpenWebsite}
+    style={styles.websiteCard}
+  >
+    <Ionicons name="globe-outline" size={22} color={Colors.PRIMARY} />
+    <Text style={styles.websiteCardText}>Visit Dash Constructions Website</Text>
+    <Ionicons name="open-outline" size={20} color={Colors.PRIMARY} />
+  </TouchableOpacity>
+</View>
+
+
       <View style={styles.actionsRow}>
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={20} color="white" />
@@ -82,8 +103,8 @@ const ServiceDetailsScreen: React.FC = () => {
 export default ServiceDetailsScreen;
 
 const styles = StyleSheet.create({
-  hero: { width: '100%', height: 270 },
-  placeholder: { width: '100%', height: 270, backgroundColor: '#eee' },
+  hero: { width: '100%', height: 240 },
+  placeholder: { width: '100%', height: 240, backgroundColor: '#eee' },
   title: {
     fontFamily: 'outfit-bold',
     fontSize: 25,
@@ -109,9 +130,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   container: {
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     marginHorizontal: 10,
-    marginVertical: 5,
+    marginTop: 5,
   },
   texts: {
     fontFamily: 'outfit-medium',
@@ -121,6 +143,12 @@ const styles = StyleSheet.create({
   },
   bold: {
     fontFamily: 'outfit-bold',
+  },
+  websiteLink: {
+    fontFamily: 'outfit-medium',
+    fontSize: 16,
+    color: Colors.PRIMARY,
+    textDecorationLine: 'underline',
   },
   actionsRow: {
     flexDirection: 'row',
@@ -148,4 +176,27 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   actionText: { color: 'white' },
+    websiteCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: Colors.PRIMARY_LIGHT,
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    width: '90%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  websiteCardText: {
+    flex: 1,
+    textAlign: 'center',
+    color: Colors.PRIMARY,
+    fontFamily: 'outfit-medium',
+    fontSize: 16,
+  },
+
 });

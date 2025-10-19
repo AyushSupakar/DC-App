@@ -10,6 +10,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Calender from '../subcomponents/Calender';
 import Colors from '../utils/Colors';
 import GlobalApi from '../utils/GlobalApi';
+import { sanitizeString } from '../utils/sanitizeString';
 
 interface Service {
     id: string;
@@ -22,7 +23,7 @@ interface RouteParams {
 }
 
 const BookingFormScreen = () => {
-    const {latlonglocation, address, errorMsg } = useLocation();
+    const {latlonglocation, address, errorMsg, loading, retry, openDeviceSettings } = useLocation();
     const {user} = useUser();
     const route = useRoute<any>();
     const [finalLatLong, setFinalLatLong] = useState("");
@@ -53,16 +54,16 @@ const BookingFormScreen = () => {
 
         const data = {
             serviceid: service?.id,
-            username: user?.fullName,
-            name:name,
+            username: user?.fullName ?? 'Email User',
+            name:sanitizeString(name),
             useremail: user?.primaryEmailAddress?.emailAddress,
-            phonenumber: phone,
-            location: finaladdress,
-            details: details,
+            phonenumber: sanitizeString(phone),
+            location: sanitizeString(finaladdress),
+            details: sanitizeString(details),
             date: moment(selectedDate).format('DD-MMM-yyyy'),
-            time: selectedTime,
+            time: sanitizeString(selectedTime),
             latlong: finalLatLong,
-            address: location,
+            address: sanitizeString(location),
         };
 
         
@@ -100,7 +101,7 @@ const BookingFormScreen = () => {
 
     },[latlonglocation, address])
 
-    return (
+     return (
         <ScrollView>
         <KeyboardAvoidingView>
             <View style={{ padding: 20, paddingTop: 40 }}>
@@ -146,24 +147,56 @@ const BookingFormScreen = () => {
                     onChangeText={setLocation}
                 />
 
+                {/* Location permission/status UI */}
+                {loading ? (
+                    <Text style={{ marginBottom: 10 }}>Checking location permission...</Text>
+                ) : null}
+
+                {errorMsg ? (
+                    <View style={{ marginBottom: 12 }}>
+                        <Text style={{ color: 'red', marginBottom: 8 }}>{errorMsg}</Text>
+                        <View style={{ flexDirection: 'row', gap: 10 }}>
+                            <TouchableOpacity
+                                style={[styles.smallButton, styles.settingsButton]}
+                                onPress={openDeviceSettings}
+                            >
+                                <Text style={styles.buttonText}>Open Settings</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={[styles.smallButton, styles.retryButton]}
+                                onPress={retry}
+                            >
+                                <Text style={styles.buttonText}>Retry</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                ) : null}
+
                 <Text style={styles.label}>Additional Details:</Text>
                 <TextInput
                     style={styles.textArea}
                     placeholder="Describe your problem or add extra details"
                     value={details}
                     onChangeText={setDetails}
-                    multiline
-                    numberOfLines={4}
+                    
                 />
             </View>
 
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
+                <TouchableOpacity
+                    style={[styles.cancelButton]}
+                    onPress={() => navigation.goBack()}
+                >
                     <Entypo name="squared-cross" size={24} color="white" />
                     <Text style={styles.buttonText}> Cancel</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.doneButton} onPress={handleBooking}>
+                <TouchableOpacity
+                    style={[styles.doneButton, !latlonglocation && styles.disabledButton]}
+                    onPress={handleBooking}
+                    disabled={!latlonglocation}
+                >
                     <FontAwesome name="calendar-check-o" size={18} color="white" />
                     <Text style={styles.buttonText}> Confirm Booking </Text>
                 </TouchableOpacity>
@@ -230,6 +263,23 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         backgroundColor: Colors.LIGHT_GREEN,
         borderRadius: 5,
+    },
+    smallButton: {
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        borderRadius: 6,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Colors.PRIMARY,
+    },
+    settingsButton: {
+        backgroundColor: Colors.PRIMARY,
+    },
+    retryButton: {
+        backgroundColor: Colors.LIGHT_GREEN,
+    },
+    disabledButton: {
+        opacity: 0.5,
     },
     buttonText: {
         color: 'white',

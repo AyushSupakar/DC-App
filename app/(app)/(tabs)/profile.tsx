@@ -1,4 +1,4 @@
-import { View, Text, Alert, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Alert, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth, useUser } from '@clerk/clerk-expo';
@@ -27,9 +27,10 @@ const Profile = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.profileCard}>
-        <Ionicons name="person-circle-outline" size={80} color="#4A90E2" style={styles.icon} />
+        {(user?.imageUrl)?(<Image source={{uri:user?.imageUrl}}
+                        style={styles.userImage}/>):(<Ionicons name="person-circle-outline" size={80} color="#4A90E2" style={styles.icon} />)}
         <Text style={styles.title}>Profile</Text>
-        <Text style={styles.name}>Welcome, {user?.firstName} {user?.lastName}</Text>
+        <Text style={styles.name}>Welcome, {(user?.firstName)?(user?.firstName + " " + user?.lastName):("Dear User")}</Text>
         <Text style={styles.email}>Email: {user?.primaryEmailAddress?.emailAddress}</Text>
 
         <TouchableOpacity onPress={handleSignOut} style={styles.signOutButton}>
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   name: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '500',
     color: '#1F2937',
     marginBottom: 4,
@@ -103,4 +104,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 8,
   },
+  profileContainer:{
+        display:'flex',
+        flexDirection:'row',
+        alignItems:'center',
+        gap:10,
+    },
+    userImage:{
+        width:80,
+        height:80,
+        borderRadius:50
+    }
 });

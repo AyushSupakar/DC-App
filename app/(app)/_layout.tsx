@@ -2,13 +2,14 @@ import { View, Text, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { Stack } from 'expo-router'
 import { useAuth } from '@clerk/clerk-expo'
+import Colors from '../utils/Colors'
 //stack->issignedin
 const Layout = () => {
   const {isSignedIn, isLoaded} = useAuth();
   if(!isLoaded){
     return(
       <View style={{flex:1, justifyContent:"center", alignItems:"center"}}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color={Colors.PRIMARY} />
       </View>
     )
   };
