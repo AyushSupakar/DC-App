@@ -1,15 +1,16 @@
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Colors from '../utils/Colors';
 
 const ServicesItemSmall = ({service}) => {
-    const navigation= useNavigation();
+    const router = useRouter();
   return (
     <TouchableOpacity style={styles.container}
-        onPress={()=>navigation.push('service_details',{
-            service:service
-         })}
+        onPress={()=> router.push({
+            pathname: '/screens/service_details',
+            params: { service: JSON.stringify(service) }
+        })}
     >
         <Image 
             source={{uri:service.images[0]?.url}}

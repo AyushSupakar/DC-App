@@ -8,3 +8,4 @@ export const sanitizeString = (input) => {
     .replace(/[^\w\s.,!?@#&-]/g, '')  // Remove any other special characters
     .trim();                          // Remove extra spaces at ends
 };
+export default sanitizeString;

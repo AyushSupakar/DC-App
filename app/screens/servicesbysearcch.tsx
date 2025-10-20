@@ -10,6 +10,8 @@ const ServicesBySearch = () => {
   const params = (route.params as { searchstr?: string } | undefined) ?? undefined;
   const [services, setServices] = useState<any[]>([]);
 
+  
+
   useEffect(()=>{
     
     if (params?.searchstr) getServicesBySearchi();
@@ -47,7 +49,7 @@ const ServicesBySearch = () => {
 
       <FlatList
         data={services}
-        renderItem={({item})=>(
+        renderItem={({item, index})=>(
           <ServiceItem service={item}/>
         )}
       />

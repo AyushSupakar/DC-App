@@ -1,16 +1,16 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import {
   FlatList,
   Image,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Linking,
 } from 'react-native';
 import Colors from '../utils/Colors';
 
@@ -25,16 +25,25 @@ interface Service {
 }
 
 const ServiceDetailsScreen: React.FC = () => {
-  const navigation: any = useNavigation();
-  const route = useRoute();
-  const params = (route.params as { service?: Service } | undefined) ?? {};
-  const service: Service | null = params.service ?? null;
+  const router = useRouter(); 
+  const params = useLocalSearchParams();
+  
+  // Deserialize the service object from params
+  const service: Service | null = params.service ? JSON.parse(params.service as string) : null;
 
   const handleOpenWebsite = () => {
     Linking.openURL('https://www.dashconstructions.in/').catch((err) =>
       console.error('Failed to open website:', err)
     );
   };
+  
+  const handleBookPress = () => {
+    // Navigate to booking_form, passing the stringified service object again
+     router.push({
+      pathname: '/screens/booking_form',
+      params: { service: JSON.stringify(service) }
+    });
+  }
 
   return (
     <ScrollView>
@@ -68,29 +77,28 @@ const ServiceDetailsScreen: React.FC = () => {
         <Text style={[styles.texts, styles.bold]}>{service?.email ?? 'N/A'}</Text>
       </View>
 
-      {/* ✅ Added company website link */}
-     <View style={[styles.container, { alignItems: 'center', marginTop: 5 }]}>
-  <TouchableOpacity
-    activeOpacity={0.8}
-    onPress={handleOpenWebsite}
-    style={styles.websiteCard}
-  >
-    <Ionicons name="globe-outline" size={22} color={Colors.PRIMARY} />
-    <Text style={styles.websiteCardText}>Visit Dash Constructions Website</Text>
-    <Ionicons name="open-outline" size={20} color={Colors.PRIMARY} />
-  </TouchableOpacity>
-</View>
+      <View style={[styles.container, { alignItems: 'center', marginTop: 5 }]}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={handleOpenWebsite}
+          style={styles.websiteCard}
+        >
+          <Ionicons name="globe-outline" size={22} color={Colors.PRIMARY} />
+          <Text style={styles.websiteCardText}>Visit Dash Constructions Website</Text>
+          <Ionicons name="open-outline" size={20} color={Colors.PRIMARY} />
+        </TouchableOpacity>
+      </View>
 
 
       <View style={styles.actionsRow}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={20} color="white" />
           <Text style={styles.actionText}> Back</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.bookButton}
-          onPress={() => navigation.push('booking_form', { service })}
+          onPress={handleBookPress}
         >
           <FontAwesome name="calendar-check-o" size={18} color="white" />
           <Text style={styles.actionText}> Book</Text>

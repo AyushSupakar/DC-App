@@ -1,16 +1,28 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Colors from '../utils/Colors';
 
 interface Service {
+  id: string; 
   name: string;
   images: Array<{ url: string }>;
+  [key: string]: any;
 }
 
 const ServiceItem = ({ service }: { service: Service }) => {
-   const navigation = useNavigation<any>();
+   const router = useRouter(); // Use useRouter from expo-router
+
+  // This function handles navigation using absolute paths
+  const handleNavigate = (pathname: string) => {
+    // With Expo Router, it's best to pass complex objects as a serialized string
+    router.push({
+      pathname: pathname,
+      params: { service: JSON.stringify(service) }
+    });
+  }
+
   return (
     <View style={styles.container}>
       <Image
@@ -20,7 +32,7 @@ const ServiceItem = ({ service }: { service: Service }) => {
       <View style={styles.textContainer}>
         <Text 
           style={styles.serviceName} 
-          numberOfLines={service.name.length > 20 ? 2 : 1} // Wrap only for long names
+          numberOfLines={service.name.length > 20 ? 2 : 1}
           ellipsizeMode="tail"
         >
           {service.name}
@@ -32,13 +44,11 @@ const ServiceItem = ({ service }: { service: Service }) => {
             justifyContent:'space-between'
           }}
         >
-
           <TouchableOpacity
             style={{
               display:'flex',
               flexDirection:'row',
               gap:5,
-               
               alignItems:'center',
               justifyContent:'center',
               paddingHorizontal:10,
@@ -46,7 +56,7 @@ const ServiceItem = ({ service }: { service: Service }) => {
               backgroundColor:Colors.PRIMARY,
               borderRadius:5,
             }}
-            onPress={() => navigation.navigate('service_details', { service })}
+            onPress={() => handleNavigate('/screens/service_details')}
           >
             <Ionicons name="enter-outline" size={20} color="white" />
             <Text
@@ -54,14 +64,12 @@ const ServiceItem = ({ service }: { service: Service }) => {
                   color:'white'
                 }}
             > Open</Text>
-            
           </TouchableOpacity>
 
           <TouchableOpacity
              style={{
               display:'flex',
               flexDirection:'row',
-               
               alignItems:'center',
               justifyContent:'center',
               gap:5,
@@ -70,18 +78,14 @@ const ServiceItem = ({ service }: { service: Service }) => {
               backgroundColor:Colors.GREEN,
               borderRadius:5
             }}
-
-            onPress={() => navigation.navigate('booking_form', { service })}
+            onPress={() => handleNavigate('/screens/booking_form')}
           >
              <Text
                style={{
                 color:'white'
               }}
              > Book</Text>
-            
           </TouchableOpacity>
-
-
         </View>
       </View>
     </View>
@@ -118,4 +122,4 @@ const styles = StyleSheet.create({
     fontFamily: 'outfit-bold',
     paddingVertical:3,
   },
-})
+});

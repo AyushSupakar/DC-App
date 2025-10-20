@@ -3,7 +3,6 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import GlobalApi from '../utils/GlobalApi';
-
 import ServiceItem from "./ServiceItem";
 
 type RouteParams = { category: string };

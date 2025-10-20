@@ -2,11 +2,10 @@ import useLocation from '@/app/hooks/useLocation';
 import { useUser } from '@clerk/clerk-expo';
 import Entypo from '@expo/vector-icons/Entypo';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { Alert, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Calender from '../subcomponents/Calender';
 import Colors from '../utils/Colors';
 import GlobalApi from '../utils/GlobalApi';
@@ -18,28 +17,25 @@ interface Service {
     [key: string]: any;
 }
 
-interface RouteParams {
-    service: Service;
-}
-
 const BookingFormScreen = () => {
     const {latlonglocation, address, errorMsg, loading, retry, openDeviceSettings } = useLocation();
     const {user} = useUser();
-    const route = useRoute<any>();
+    const params = useLocalSearchParams();
+    const router = useRouter();
+    
+    const service: Service = params.service 
+        ? JSON.parse(params.service as string) 
+        : { id: '', name: 'Unknown Service' };
+
     const [finalLatLong, setFinalLatLong] = useState("");
     const [finaladdress, setFinaladdress] = useState("N/A");
-    const [service, setService] = useState<Service>((route?.params as RouteParams)?.service || { id: '', name: '' });
-    const navigation = useNavigation<any>();
-
+    
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [location, setLocation] = useState('');
     const [details, setDetails] = useState('');
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTime, setSelectedTime] = useState(null);
-    // useEffect(()=>{
-    //     console.log('address='+address);
-    // },[])
 
     const handleBooking = () => {
         if (!name || !phone || !location || !selectedDate || !selectedTime) {
@@ -48,7 +44,7 @@ const BookingFormScreen = () => {
         }
 
         if ((address?.city)!=='Bargarh') {
-            Alert.alert('Error', 'Sorry, we  currently operate only in Bargarh, Odisha (India).');
+            Alert.alert('Error', 'Sorry, we currently operate only in Bargarh, Odisha (India).');
             return;
         }
 
@@ -65,26 +61,14 @@ const BookingFormScreen = () => {
             latlong: finalLatLong,
             address: sanitizeString(location),
         };
-
         
         GlobalApi.createBooking(data).then(resp=>{
             console.log(resp)
         })
-
        
         Alert.alert('Success', 'Your booking has been submitted.');
         
-
-        navigation.reset({
-            index: 0,
-            routes: [
-              {
-                name: 'home'
-              },
-            ],
-          });
-
-
+        router.replace('/');
     };
 
     useEffect(()=>{
@@ -94,115 +78,113 @@ const BookingFormScreen = () => {
         if (address?.city && address?.region && address?.country) {
             const formattedAddress = `${address.city}, ${address.region}, ${address.country}`;
             setFinaladdress(formattedAddress);
-            setLocation(formattedAddress); // Autofill input field
+            setLocation(formattedAddress);
         }
-    
-
-
     },[latlonglocation, address])
 
      return (
-        <ScrollView>
-        <KeyboardAvoidingView>
-            <View style={{ padding: 20, paddingTop: 40 }}>
-                <Text style={{ fontSize: 20, fontFamily: 'outfit', alignSelf:'center' }}>
-                    You are Booking for
-                    <Text style={{
-                        fontSize: 25,
-                        fontFamily: 'outfit-medium',
-                        color: Colors.PRIMARY,
-                        fontStyle: 'italic',
-                        fontWeight: '600'
-                    }}> {service?.name}</Text>
-                </Text>
-            </View>
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+            <ScrollView>
+                <View style={{ padding: 20, paddingTop: 40 }}>
+                    <Text style={{ fontSize: 20, fontFamily: 'outfit', alignSelf:'center' }}>
+                        You are Booking for
+                        <Text style={{
+                            fontSize: 25,
+                            fontFamily: 'outfit-medium',
+                            color: Colors.PRIMARY,
+                            fontStyle: 'italic',
+                            fontWeight: '600'
+                        }}> {service?.name}</Text>
+                    </Text>
+                </View>
 
-            <View>
-                <Calender onDateSelect={setSelectedDate} onTimeSelect={setSelectedTime} />
-            </View>
+                <View>
+                    <Calender onDateSelect={setSelectedDate} onTimeSelect={setSelectedTime} />
+                </View>
 
-            <View style={styles.inputContainer}>
-                <Text style={styles.label}>Name:</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Enter your name"
-                    value={name}
-                    onChangeText={setName}
-                />
+                <View style={styles.inputContainer}>
+                    <Text style={styles.label}>Name:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter your name"
+                        value={name}
+                        onChangeText={setName}
+                    />
 
-                <Text style={styles.label}>Phone Number:</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Enter your phone number"
-                    keyboardType="phone-pad"
-                    value={phone}
-                    onChangeText={setPhone}
-                />
+                    <Text style={styles.label}>Phone Number:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter your phone number"
+                        keyboardType="phone-pad"
+                        value={phone}
+                        onChangeText={setPhone}
+                    />
 
-                <Text style={styles.label}>Current Location:</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Enter your location"
-                    value={location}
-                    onChangeText={setLocation}
-                />
+                    <Text style={styles.label}>Current Location:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter your location"
+                        value={location}
+                        onChangeText={setLocation}
+                    />
 
-                {/* Location permission/status UI */}
-                {loading ? (
-                    <Text style={{ marginBottom: 10 }}>Checking location permission...</Text>
-                ) : null}
+                    {loading ? (
+                        <Text style={{ marginBottom: 10 }}>Checking location permission...</Text>
+                    ) : null}
 
-                {errorMsg ? (
-                    <View style={{ marginBottom: 12 }}>
-                        <Text style={{ color: 'red', marginBottom: 8 }}>{errorMsg}</Text>
-                        <View style={{ flexDirection: 'row', gap: 10 }}>
-                            <TouchableOpacity
-                                style={[styles.smallButton, styles.settingsButton]}
-                                onPress={openDeviceSettings}
-                            >
-                                <Text style={styles.buttonText}>Open Settings</Text>
-                            </TouchableOpacity>
+                    {errorMsg ? (
+                        <View style={{ marginBottom: 12 }}>
+                            <Text style={{ color: 'red', marginBottom: 8 }}>{errorMsg}</Text>
+                            <View style={{ flexDirection: 'row', gap: 10 }}>
+                                <TouchableOpacity
+                                    style={[styles.smallButton, styles.settingsButton]}
+                                    onPress={openDeviceSettings}
+                                >
+                                    <Text style={styles.buttonText}>Open Settings</Text>
+                                </TouchableOpacity>
 
-                            <TouchableOpacity
-                                style={[styles.smallButton, styles.retryButton]}
-                                onPress={retry}
-                            >
-                                <Text style={styles.buttonText}>Retry</Text>
-                            </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={[styles.smallButton, styles.retryButton]}
+                                    onPress={retry}
+                                >
+                                    <Text style={styles.buttonText}>Retry</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
-                ) : null}
+                    ) : null}
 
-                <Text style={styles.label}>Additional Details:</Text>
-                <TextInput
-                    style={styles.textArea}
-                    placeholder="Describe your problem or add extra details"
-                    value={details}
-                    onChangeText={setDetails}
-                    
-                />
-            </View>
+                    <Text style={styles.label}>Additional Details:</Text>
+                    <TextInput
+                        style={styles.textArea}
+                        placeholder="Describe your problem or add extra details"
+                        value={details}
+                        onChangeText={setDetails}
+                    />
+                </View>
 
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                    style={[styles.cancelButton]}
-                    onPress={() => navigation.goBack()}
-                >
-                    <Entypo name="squared-cross" size={24} color="white" />
-                    <Text style={styles.buttonText}> Cancel</Text>
-                </TouchableOpacity>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                        style={[styles.cancelButton]}
+                        onPress={() => router.back()}
+                    >
+                        <Entypo name="squared-cross" size={24} color="white" />
+                        <Text style={styles.buttonText}> Cancel</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity
-                    style={[styles.doneButton, !latlonglocation && styles.disabledButton]}
-                    onPress={handleBooking}
-                    disabled={!latlonglocation}
-                >
-                    <FontAwesome name="calendar-check-o" size={18} color="white" />
-                    <Text style={styles.buttonText}> Confirm Booking </Text>
-                </TouchableOpacity>
-            </View>
+                    <TouchableOpacity
+                        style={[styles.doneButton, !latlonglocation && styles.disabledButton]}
+                        onPress={handleBooking}
+                        disabled={!latlonglocation}
+                    >
+                        <FontAwesome name="calendar-check-o" size={18} color="white" />
+                        <Text style={styles.buttonText}> Confirm Booking </Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
         </KeyboardAvoidingView>
-        </ScrollView>
     );
 }
 
@@ -285,3 +267,4 @@ const styles = StyleSheet.create({
         color: 'white',
     }
 });
+
