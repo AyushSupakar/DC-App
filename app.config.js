@@ -8,6 +8,9 @@ module.exports = {
     scheme: "dcapp",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
+    "plugins": [
+      "expo-router"
+    ],
    extra: {
     // 1. Clerk Publishable Key (for the client app)
     
