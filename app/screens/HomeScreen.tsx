@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
-import useLocation from '../hooks/useLocation';
+import museLocation from '../hooks/museLocation';
 import Categories from "./Categories";
 import Header from './Header';
 import Services from "./Services";
@@ -8,7 +8,7 @@ import Slider from './Slider';
 
 const HomeScreen = () => {
   const [showsearch, setShowSearch] = useState(true);
-  const { errorMsg } = useLocation();
+  const { errorMsg } = museLocation();
 
   useEffect(() => {
     if (errorMsg) {

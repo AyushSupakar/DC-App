@@ -89,7 +89,9 @@ const BookingFormScreen = () => {
         >
             <ScrollView>
                 <View style={{ padding: 20, paddingTop: 40 }}>
-                    <Text style={{ fontSize: 20, fontFamily: 'outfit', alignSelf:'center' }}>
+                    <Text style={{ fontSize: 20, fontFamily: 'outfit', alignSelf:'center',
+                        backgroundColor: Colors.WHITE,
+                     }}>
                         You are Booking for
                         <Text style={{
                             fontSize: 25,

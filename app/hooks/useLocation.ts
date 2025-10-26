@@ -32,8 +32,7 @@ const useLocation = (): UseLocationResult => {
     setLoading(true);
     setErrorMsg(null);
     try {
-      // Check if device location services are enabled (Android/iOS)
-      // Note: hasServicesEnabledAsync may not exist on very old expo-location versions, so guard it.
+      
       if (typeof (Location as any).hasServicesEnabledAsync === "function") {
         const servicesEnabled = await (Location as any).hasServicesEnabledAsync();
         if (!servicesEnabled) {

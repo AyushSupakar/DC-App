@@ -1,14 +1,7 @@
+import { useState, useEffect } from "react";
 import * as Location from "expo-location";
-import { useEffect, useState } from "react";
 
-/**
- * @returns {{
- *   latlonglocation: { latitude: number, longitude: number } | null,
- *   address: { city: string, region: string, country: string } | null,
- *   errorMsg: string | null
- * }}
- */
-const useLocation = () => {
+const museLocation = () => {
   const [latlonglocation, setLocation] = useState(null);
   const [address, setAddress] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -35,4 +28,4 @@ const useLocation = () => {
   return { latlonglocation, address, errorMsg };
 };
 
-export default useLocation;
+export default museLocation;

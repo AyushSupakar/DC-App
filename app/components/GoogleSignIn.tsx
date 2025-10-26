@@ -1,73 +1,84 @@
 import React, { useCallback, useEffect } from 'react'
 import * as WebBrowser from 'expo-web-browser'
-import * as AuthSession from 'expo-auth-session'
-import { useSSO } from '@clerk/clerk-expo'
-import { View, Button, Platform } from 'react-native'
+import * as Linking from 'expo-linking' // 👈 Needed for creating the native redirect URI
+import { useSSO } from '@clerk/clerk-expo' // 👈 Using the modern, correct hook
+import { View, Button, Platform, StyleSheet, TouchableOpacity, Text } from 'react-native'
+// Assuming you have a Colors import
+import Colors from '../utils/Colors' 
+import { useRouter } from 'expo-router' // 👈 Added: Needed for navigation after sign-in
 
-// Preloads the browser for Android devices to reduce authentication load time
-// See: https://docs.expo.dev/guides/authentication/#improving-user-experience
+// 1. Warm up and complete browser session (Standard Expo practice)
+WebBrowser.maybeCompleteAuthSession()
+
+// Function to get the native redirect URI
+const getNativeRedirectUrl = () => {
+    // 🛑 CRITICAL: Uses your app's scheme ('dcapp' from app.config.js) 
+    // and the Clerk-specific path ('oauth-native-redirect')
+    return Linking.createURL('/oauth-native-redirect', { scheme: 'dcapp' })
+}
+
 export const useWarmUpBrowser = () => {
   useEffect(() => {
     if (Platform.OS !== 'android') return
     void WebBrowser.warmUpAsync()
     return () => {
-      // Cleanup: closes browser when component unmounts
       void WebBrowser.coolDownAsync()
     }
   }, [])
 }
 
-// Handle any pending authentication sessions
-WebBrowser.maybeCompleteAuthSession()
-
 export default function GoogleSignIn() {
-  useWarmUpBrowser()
-
-  // Use the `useSSO()` hook to access the `startSSOFlow()` method
+  useWarmUpBrowser() // Call the warm-up function
+  const router = useRouter() // Initialize router
+  
+  // Use the `useSSO()` hook
   const { startSSOFlow } = useSSO()
 
   const onPress = useCallback(async () => {
     try {
-      // Start the authentication process by calling `startSSOFlow()`
-      const { createdSessionId, setActive, signIn, signUp } = await startSSOFlow({
+      const redirectUrl = getNativeRedirectUrl() // e.g., dcapp://oauth-native-redirect
+
+      // Start the SSO flow with the correct strategy and the fixed redirect URL
+      const { createdSessionId, setActive } = await startSSOFlow({
         strategy: 'oauth_google',
-        // For web, defaults to current path
-        // For native, you must pass a scheme, like AuthSession.makeRedirectUri({ scheme, path })
-        // For more info, see https://docs.expo.dev/versions/latest/sdk/auth-session/#authsessionmakeredirecturioptions
-        redirectUrl: AuthSession.makeRedirectUri(),
+        redirectUrl: redirectUrl,
       })
 
       // If sign in was successful, set the active session
       if (createdSessionId) {
-        setActive!({
-          session: createdSessionId,
-          // Check for session tasks and navigate to custom UI to help users resolve them
-          // See https://clerk.com/docs/guides/development/custom-flows/overview#session-tasks
-          navigate: async ({ session }) => {
-            if (session?.currentTask) {
-              console.log(session?.currentTask)
-            //   router.push('/sign-in/tasks')
-              return
-            }
-
-            // router.push('/')
-          },
-        })
+        await setActive!({ session: createdSessionId })
+        // Navigate to your main screen after successful sign-in
+        router.replace('/') 
       } else {
-        // If there is no `createdSessionId`,
-        // there are missing requirements, such as MFA
-        // See https://clerk.com/docs/guides/development/custom-flows/authentication/oauth-connections#handle-missing-requirements
+        // Handle missing requirements (e.g., need to collect a username)
       }
     } catch (err) {
-      // See https://clerk.com/docs/guides/development/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2))
+      // Log the error to see why the browser isn't launching/redirecting
+      // This is crucial for debugging production failures
+      console.error('SSO Flow Error:', JSON.stringify(err, null, 2))
     }
-  }, [])
+  }, [startSSOFlow, router])
 
   return (
     <View>
-      <Button title="Sign in with Google" onPress={onPress} />
+      <TouchableOpacity style={styles.googleButton} onPress={onPress}>
+        <Text style={styles.googleButtonText}>Sign in with Google</Text>
+      </TouchableOpacity>
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+    googleButton: {
+        backgroundColor: '#4285F4', // Google Blue
+        paddingVertical: 14,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginTop: 5,
+    },
+    googleButtonText: {
+        color: 'white',
+        fontSize: 17,
+        fontWeight: '600',
+    }
+})
