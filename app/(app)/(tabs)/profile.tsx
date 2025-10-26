@@ -3,6 +3,14 @@ import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth, useUser } from '@clerk/clerk-expo';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Colors from '../../utils/Colors';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import {
+  FlatList,
+  Linking,
+  ScrollView,
+  
+} from 'react-native';
 
 const Profile = () => {
   const { signOut } = useAuth();
@@ -24,6 +32,27 @@ const Profile = () => {
     ]);
   };
 
+  const handleOpenWebsite = () => {
+
+    Alert.alert("Delete User Data", "Are you sure you want to permanently delete your user data?", [
+      {
+        text: "Cancel",
+        style: "cancel"
+      },
+      {
+        text: "Yes",
+        style: "destructive",
+        onPress:  () => {
+          Linking.openURL('https://forms.gle/be3fQ8rKSrXKGoPt7').catch((err) =>
+          console.error('Failed to open User Delete Page', err)
+      );
+          
+        }
+      }
+    ]);
+      
+    };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.profileCard}>
@@ -37,6 +66,19 @@ const Profile = () => {
           <Ionicons name="log-out-outline" size={20} color="white" />
           <Text style={styles.signOutText}>Sign Out</Text>
         </TouchableOpacity>
+
+         
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={handleOpenWebsite}
+          style={styles.websiteCard}
+        >
+          <MaterialIcons name="delete-forever" size={22} color={Colors.RED} />
+          <Text style={styles.websiteCardText}>Permanently Delete User Data?</Text>
+          
+        </TouchableOpacity>
+      
+
       </View>
     </SafeAreaView>
   );
@@ -114,5 +156,41 @@ const styles = StyleSheet.create({
         width:80,
         height:80,
         borderRadius:50
-    }
+    },websiteLink: {
+        fontFamily: 'outfit-medium',
+        fontSize: 16,
+        color: Colors.PRIMARY,
+        textDecorationLine: 'underline',
+      },
+      actionsRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 10,
+        margin: 10,
+        marginHorizontal: 20,
+      },  actionText: { color: 'white' },
+          websiteCard: {
+            marginVertical:40,
+            marginHorizontal:10,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          backgroundColor: Colors.VERY_LIGHT_RED,
+          borderRadius: 10,
+          paddingVertical: 10,
+          paddingHorizontal: 15,
+          width: '100%',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 3,
+          elevation: 2,
+        },
+        websiteCardText: {
+          flex: 1,
+          textAlign: 'center',
+          color: Colors.RED,
+          fontFamily: 'outfit-medium',
+          fontSize: 14,
+        },
 });

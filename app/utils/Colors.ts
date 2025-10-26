@@ -7,5 +7,6 @@ export default {
     GREEN:'#018786',
     RED:'#E53935',
     LIGHT_RED:'#e0474c',
+    VERY_LIGHT_RED: '#fadcddff',
     LIGHT_GREEN:'#4CAF50'
 }

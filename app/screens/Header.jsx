@@ -6,6 +6,7 @@ import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'reac
 import SignOutButton from '../subcomponents/SignOutButton';
 import Colors from '../utils/Colors';
 
+
 const Header = ({showsearch}) => {
     const {user, isLoading} = useUser();
     const [searchstr, setSearchstr] = useState("");  

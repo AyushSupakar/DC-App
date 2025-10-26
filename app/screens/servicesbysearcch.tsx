@@ -5,6 +5,10 @@ import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native
 import ServiceItem from "./ServiceItem";
 import GlobalApi from '../utils/GlobalApi';
 
+export const options = {
+  headerShown: false,
+};
+
 const ServicesBySearch = () => {
   const route = useRoute();
   const params = (route.params as { searchstr?: string } | undefined) ?? undefined;

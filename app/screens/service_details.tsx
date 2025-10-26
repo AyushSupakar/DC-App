@@ -47,6 +47,7 @@ const ServiceDetailsScreen: React.FC = () => {
 
   return (
     <ScrollView>
+      <View style={{ padding: 20, paddingTop: 40, backgroundColor: Colors.LIGHT_GRAY}}>
       {service?.images && service.images.length > 0 ? (
         <Image source={{ uri: service.images[0]?.url }} style={styles.hero} />
       ) : (
@@ -103,6 +104,7 @@ const ServiceDetailsScreen: React.FC = () => {
           <FontAwesome name="calendar-check-o" size={18} color="white" />
           <Text style={styles.actionText}> Book</Text>
         </TouchableOpacity>
+      </View>
       </View>
     </ScrollView>
   );

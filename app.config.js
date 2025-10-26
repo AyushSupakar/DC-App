@@ -2,14 +2,33 @@ module.exports = {
   expo: {
     name: "dc_app",
     slug: "dc_app",
-    version: "1.0.6",
+    version: "1.0.7",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
     scheme: "dcapp",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0" // Or a similar version for Android 15/API 35
+          },
+        }
+      ], // Existing plugin
+  [
+    "expo-splash-screen",
+    {
+      "image": "./assets/images/splash-icon.png", // Path to your splash screen image
+      "resizeMode": "contain", // or "cover"
+      "backgroundColor": "#E6F4FE", // Background color
+          "imageWidth": 200,
+    }
+  ]
     ],
    extra: {
     // 1. Clerk Publishable Key (for the client app)

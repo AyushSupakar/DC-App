@@ -87,10 +87,10 @@ const BookingFormScreen = () => {
             style={{ flex: 1 }}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-            <ScrollView>
-                <View style={{ padding: 20, paddingTop: 40 }}>
+            <ScrollView style={{ padding: 0, paddingTop: 0, backgroundColor: Colors.LIGHT_GRAY}}>
+                <View style={{ padding: 20, paddingTop: 40, backgroundColor: Colors.LIGHT_GRAY}}>
                     <Text style={{ fontSize: 20, fontFamily: 'outfit', alignSelf:'center',
-                        backgroundColor: Colors.WHITE,
+                        
                      }}>
                         You are Booking for
                         <Text style={{
@@ -134,7 +134,7 @@ const BookingFormScreen = () => {
                     />
 
                     {loading ? (
-                        <Text style={{ marginBottom: 10 }}>Checking location permission...</Text>
+                        <Text style={{color:Colors.GREEN, marginBottom: 10 }}>Checking location permission...</Text>
                     ) : null}
 
                     {errorMsg ? (
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
         padding: 10,
         margin: 5,
         marginHorizontal: 20,
-        marginBottom:20
+        marginBottom:30
     },
     cancelButton: {
         flexDirection: 'row',
