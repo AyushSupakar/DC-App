@@ -2,7 +2,7 @@ module.exports = {
   expo: {
     name: "dc_app",
     slug: "dc_app",
-    version: "1.0.8",
+    version: "1.0.9",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
     scheme: "dcapp",
